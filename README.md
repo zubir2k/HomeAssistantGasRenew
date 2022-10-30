@@ -12,6 +12,8 @@ LPG Gas Monitoring Automation purely based on date comparison. It may not give a
 
 ![image](https://user-images.githubusercontent.com/1905339/198865938-03c48285-2ba7-43b7-9aee-f81dceda9e23.png)
 
+![image](https://user-images.githubusercontent.com/1905339/198867810-904da397-5fed-42c1-85cf-b83296648bb6.png)
+
 ## Installation
 1. Simply copy the downloaded source into your Home Assistant `\config`
 
@@ -35,3 +37,13 @@ homeassistant:
 1. Enter your estimated duration; maximum is 365 days @ 1 year (default is 70 days)
 2. Enter your last change date.
 3. Enter your previous change date.
+
+### Automation Ideas
+1. Integrate with [Google Calendar](https://www.home-assistant.io/integrations/google/) and add reminder to your Google account.
+2. Make an order via telegram to your nearest convenience store (if the store supports it).
+
+### Future Development
+- Integration with weight sensors to provide more accurate readings by [@ishakmuhamad](https://github.com/ishakmuhamad)
+
+## Join Us
+- [HomeAssistantMalaysia](https://www.facebook.com/groups/homeassistantmalaysia)
