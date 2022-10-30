@@ -1,0 +1,65 @@
+### [ Main Dashboard ] ###
+
+type: vertical-stack
+cards:
+  - type: markdown
+    content: >
+      {% set gasduration = state_attr('sensor.tong_gas', 'duration') %}
+
+      {% if gasduration == 0 %}<ha-alert alert-type="success">The gas tank has
+      been renewed today. Awesome!</ha-alert>
+
+      {% elif gasduration > 1 and not (is_state('sensor.tong_gas', 'Low') or
+      is_state('sensor.tong_gas', 'Critical')) %}<ha-alert
+      alert-type="success">Looking good so far. It's been {{ gasduration }}
+      day(s) since last change on {{
+      state_attr("input_datetime.gas_last_change", "timestamp") |
+      timestamp_custom("%A, %d %B %Y") }}.</ha-alert>
+
+      {% elif is_state('sensor.tong_gas', 'Low') or is_state('sensor.tong_gas',
+      'Critical') %}<ha-alert alert-type="warning">You really need to consider
+      checking your spare tank now. Current tank is probably <b>{{
+      states('sensor.tong_gas') | upper }}</b>.</ha-alert>
+
+      {% endif %}
+    title: 🔥 LPG Gas Monitoring
+  - type: entities
+    entities:
+      - entity: sensor.tong_gas
+        name: Status
+      - type: attribute
+        attribute: expiry_date
+        entity: sensor.tong_gas
+        name: Estimated Expiry Date
+      - type: attribute
+        attribute: last_change
+        entity: sensor.tong_gas
+        name: Last Changed
+      - type: attribute
+        attribute: previous_change
+        entity: sensor.tong_gas
+        name: Previous Changed
+  - show_name: true
+    show_icon: false
+    type: button
+    tap_action:
+      action: call-service
+      confirmation:
+        text: This will reset the dates. Continue?
+      service: script.gas_renew
+      service_data: {}
+      target: {}
+    name: Gas Tank Renew
+
+### [ Configuration Panel ] ###
+
+type: entities
+entities:
+  - entity: automation.gas_alert_notification
+    name: Gas Notification
+  - type: divider
+  - entity: input_number.gas_duration
+    name: Set Duration (days)
+  - entity: input_datetime.gas_last_change
+  - entity: input_datetime.gas_previous_change
+title: Configuration
