@@ -1,0 +1,91 @@
+template:
+  - sensor:
+    #Tong Gas Gauge by Duration
+      - name: "Tong Gas"
+        icon: mdi:gas-burner
+        state: >-
+          {%set gas_duration = relative_time((now().timestamp() - state_attr("input_datetime.gas_last_change", "timestamp")) / 86400) | int %}
+          {%set gas_percentage = 100 - (gas_duration / (states('input_number.gas_duration') | int) * 100) | int %}
+          {%if gas_percentage <= 5 %}Critical
+          {%elif gas_percentage <= 30 and gas_percentage >= 6 %}Low
+          {%elif gas_percentage <= 60 and gas_percentage >= 29 %}Medium
+          {%elif gas_percentage <= 100 and gas_percentage >= 59 %}Full
+          {%endif%}
+        attributes:
+          duration: '{{ relative_time((now().timestamp() - state_attr("input_datetime.gas_last_change", "timestamp")) / 86400) | int }}'
+          last_change: '{{ states("input_datetime.gas_last_change") }}'
+          previous_change: '{{ states("input_datetime.gas_previous_change") }}'
+          expiry_date: >-
+            {{ (as_timestamp(states('input_datetime.gas_last_change')) + (states('input_number.gas_duration') | float*24*3600)) | timestamp_custom('%Y-%m-%d', True) }}
+
+input_datetime:
+  gas_previous_change:
+    name: "Gas Previous Change"
+    icon: mdi:gas-burner
+    has_date: true
+    has_time: false
+  gas_last_change:
+    name: "Gas Last Change"
+    icon: mdi:gas-burner
+    has_date: true
+    has_time: false
+
+input_number:
+  gas_duration:
+    name: Gas Duration
+    initial: 70
+    min: 1
+    max: 365 #1 year, 365 days
+    step: 1
+    mode: box
+
+script:
+  gas_renew:
+    alias: "🔥 Gas Renew"
+    sequence:
+      - service: input_datetime.set_datetime
+        data:
+          datetime: "{{ states('input_datetime.gas_last_change') }}"
+        target:
+          entity_id: input_datetime.gas_previous_change
+      - service: input_datetime.set_datetime
+        data:
+          datetime: "{{ now().strftime('%Y-%m-%d') }}"
+        target:
+          entity_id: input_datetime.gas_last_change
+    mode: single
+    icon: mdi:gas-burner
+    
+automation:
+  - alias: "🔥 Gas - Alert Notification"
+    description: "Alert notification on Gas critical level"
+    mode: single
+    trigger:
+      - platform: template
+        value_template: >-
+          {{ is_state('sensor.tong_gas', 'Critical') or is_state('sensor.tong_gas',
+          'Low') }}
+      - platform: template
+        value_template: >-
+          {{ state_attr('sensor.tong_gas', 'expiry_date') == (as_timestamp(now()) +
+          14 | float*24*3600) | timestamp_custom('%Y-%m-%d') }}
+    condition: []
+    action:
+      - service: notify.notify
+        data:
+          title: "🔥 LPG Gas Monitoring"
+          message: >-
+            <b>{{ now().strftime('%-I:%M %p') }} - Your gas is at {{ states('sensor.tong_gas') | upper }} level.</b><br />{%if
+            is_state('sensor.tong_gas', 'Critical') %}Please ensure you have a spare
+            tank to avoid interruptions.{%elif is_state('sensor.tong_gas', 'Low')
+            %}It is high time to order a spare tank if you have not done so.
+            {%endif%}
+      - service: persistent_notification.create
+        data:
+          message: >-
+            {%if is_state('sensor.tong_gas', 'Critical') %}<ha-alert alert-type="error"><b>{{ now().strftime('%-I:%M %p') }} - Your gas is at {{ states('sensor.tong_gas') | upper }} level.</b><br />Please ensure you have a spare
+            tank to avoid interruptions.{%elif is_state('sensor.tong_gas', 'Low')
+            %}<ha-alert alert-type="warning"><b>{{ now().strftime('%-I:%M %p') }} - Your gas is at {{ states('sensor.tong_gas') | upper }} level.</b><br />It is high time to order a spare tank if you have not done so.
+            {%endif%}</ha-alert>
+          title: "🔥 LPG Gas Monitoring"
+  
