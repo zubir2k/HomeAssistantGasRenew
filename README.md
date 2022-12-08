@@ -14,6 +14,13 @@ LPG Gas Monitoring Automation purely based on date comparison. It may not give a
 
 ![image](https://user-images.githubusercontent.com/1905339/198867810-904da397-5fed-42c1-85cf-b83296648bb6.png)
 
+## Video Tutorial
+
+[![Youtube](https://user-images.githubusercontent.com/1905339/206341098-a6a216bc-e869-44d7-8e07-802e52159215.png)](https://youtu.be/nE4BGvmo7f4)
+
+- Tong Gas Automation menggunakan Home Assistant: https://youtu.be/nE4BGvmo7f4
+- Beginners Guide to Home Assistant: https://youtu.be/-jyegp-mL20 
+
 ## Installation
 1. Simply copy the downloaded source into your Home Assistant `\config`
 
