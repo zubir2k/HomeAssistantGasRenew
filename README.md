@@ -50,7 +50,7 @@ homeassistant:
 2. Make an order via telegram to your nearest convenience store (if the store supports it).
 
 ### Future Development
-- Integration with weight sensors to provide more accurate readings by [@ishakmuhamad](https://github.com/ishakmuhamad)\
+- Integration with [weight sensors](https://github.com/ishakmuhamad/home-assistant-tong-petronas-weight-scale) to provide more accurate readings by [@ishakmuhamad](https://github.com/ishakmuhamad)\
 Reference: [ESPHome-Smart-Scale](https://github.com/markusressel/ESPHome-Smart-Scale)
 
 ## Join Us
