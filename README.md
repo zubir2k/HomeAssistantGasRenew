@@ -1,3 +1,10 @@
+> [!Warning]
+> This template is no longer maintained.
+> Please use the integration instead. 
+>
+> [![Repo](https://img.shields.io/badge/zubir2k-homeassistant/gasrenew-brightgreen?logo=github)](https://github.com/zubir2k/homeassistant-gasrenew)
+> 
+
 <img alt="Home Assistant Gas Renew" src="https://user-images.githubusercontent.com/1905339/198865307-5006de3f-cf6d-4562-850b-fda09e3c8f28.png" width="75%">
 
 ![visitors](https://visitor-badge.glitch.me/badge?page_id=zubir2k.homeassistantgasrenew.visitor-badge)
